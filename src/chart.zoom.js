@@ -69,8 +69,14 @@ function zoomTimeScale(scale, zoom, center) {
 	var minLimitMoment = new Moment(minLimit)
 	var maxLimitMoment = new Moment(maxLimit)
 
-	if(new_min >= minLimitMoment && new_max <= maxLimitMoment) {
+	var minCon = (new_min >= minLimitMoment)
+	var maxCon = (new_max <= maxLimitMoment)
+	if(minCon && maxCon) {
 		options.time.min = new_min
+		options.time.max = new_max
+	} else if(minCon && !maxCon) {
+		options.time.min = new_min
+	} else if(!minCon && maxCon) {
 		options.time.max = new_max
 	}
 }
@@ -87,9 +93,18 @@ function zoomNumericalScale(scale, zoom, center) {
 	var min_limit = scale.options.ticks.min_limit
 	var max_limit = scale.options.ticks.max_limit
 
-	if(new_min >= min_limit && new_max <= max_limit) {
-		scale.options.ticks.min = new_min
-		scale.options.ticks.max = new_max
+	/* Currently not supporting unbounded on one direction only. */
+	if(max_limit && min_limit) {
+		var minCon = (new_min >= min_limit)
+		var maxCon = (new_max <= max_limit)
+		if(minCon && maxCon) {
+			scale.options.ticks.min = new_min
+			scale.options.ticks.max = new_max
+		} else if(minCon && !maxCon) {
+			scale.options.ticks.min = new_min
+		} else if(!minCon && maxCon) {
+			scale.options.ticks.max = new_max
+		}
 	}
 }
 
